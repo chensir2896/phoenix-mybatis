@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.phoenix.mapper.PersonMapper">
+
+    <select id="listPerson" resultType="com.phoenix.entity.Person">
+        select  id,age,name,sex from person
+    </select>
+
+    <select id="getLastPerson" resultType="com.phoenix.entity.Person">
+        select  id,age,name,sex from person order by  id desc limit 1
+    </select>
+
+
+    <insert id="save" parameterType="com.phoenix.entity.Person">
+        upsert into person(id,age,name,sex)values
+        (#{id},#{age},#{name},#{sex})
+    </insert>
+
+    <delete id="deleteAll">
+        delete from person
+    </delete>
+
+    <select id="pageList" parameterType="java.util.Map" resultType="com.phoenix.entity.Person">
+        select  id,age,name,sex from person
+        <where>
+            <if test="startId != null">
+                id >= #{startId}
+            </if>
+        </where>
+        limit #{pageCount}
+    </select>
+
+    <select id="get" parameterType="java.lang.Integer" resultType="com.phoenix.entity.Person">
+        select  id,age,name,sex from person where id=#{id}
+    </select>
+
+    <select id="countSex" parameterType="java.lang.String" resultType="java.lang.Long">
+        select  count(sex) from person
+        <where>
+            <if test="sex != null">sex=#{sex}</if>
+        </where>
+    </select>
+
+
+
+    <select id="getMany" parameterType="java.util.List" resultType="com.phoenix.entity.Person">
+        select  id,age,name,sex from person
+        where id in (
+        <foreach collection="list" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+</mapper>
+
